@@ -1,0 +1,138 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Christmas Lists
+  description: An API to manager users and their Christmas wish lists. Users can see others' lists and what has been bought, but cannot see what has been bought on their own list.
+servers:
+  - url: http://localhost:8080/v1
+paths:
+  /list:
+    get:
+      description: 
+        Retrieves the list for specified user.
+      parameters:
+        - in: query
+          name: username
+          schema:
+            type: string
+          description: Username for the list being retrieved.
+        - in: query
+          name: currentUser
+          schema:
+            type: string
+          description: Username for the logged in user.
+      responses:
+        '200':
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChristmasList'
+    post:
+      description: 
+        Adds the list for the logged in user.
+      parameters:
+        - in: query
+          name: currentUser
+          schema:
+            type: string
+          description: Username for the list being added to.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Item'
+      responses:
+        '200':
+          description: Successful Operation
+  /list/buy:
+    post:
+      description: 
+        Adds the list for the logged in user.
+      parameters:
+        - in: query
+          name: username
+          schema:
+            type: string
+          description: Username for the list being added to.
+        - in: query
+          name: currentUser
+          schema:
+            type: string
+          description: The current user.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Item'
+      responses:
+        '200':
+          description: Successful Operation
+  /user:
+    post:
+      summary: "Create user"
+      description: This can only be done by the logged in user.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        default:
+          description: "successful operation"
+  /user/all:
+    get:
+      summary: "Gets all users"
+      responses:
+        '200':
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+components:
+  schemas:
+      ChristmasList:
+        type: object
+        required:
+          - username
+          - list
+        properties:
+          username:
+            type: string
+          list:
+            type: array
+            items:
+              $ref: '#/components/schemas/Item'
+      Item:
+        type: object
+        required:
+          - name
+        properties:
+          name:
+            type: string
+          linkOrNotes:
+            type: string
+          bought:
+            type: boolean
+            default: false
+      User:
+        type: object
+        required:
+          - username
+          - password
+          - firstName
+        properties:
+          username:
+            type: string
+          password:
+            type: string
+          firstName:
+            type: string
+          lastName:
+            type: string
