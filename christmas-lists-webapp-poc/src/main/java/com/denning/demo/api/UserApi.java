@@ -9,6 +9,7 @@ import com.denning.demo.model.User;
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -31,6 +32,7 @@ public interface UserApi
     @ApiOperation(value = "Gets all users", nickname = "userAllGet", notes = "", response = User.class, responseContainer = "List", tags={  })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "Successful Operation", response = User.class, responseContainer = "List") })
+    @CrossOrigin(origins = "http://localhost:4200")
     @RequestMapping(value = "/user/all",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
@@ -49,6 +51,7 @@ public interface UserApi
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "successful operation"),
         @ApiResponse(code = 400, message = "Invalid username/password supplied") })
+    @CrossOrigin(origins = "http://localhost:4200")
     @RequestMapping(value = "/user/login",
         method = RequestMethod.GET)
     ResponseEntity<String> userLoginGet(@NotNull @ApiParam(value = "The user name for login", required = true) @Valid @RequestParam(value = "username", required = true) String username,@NotNull @ApiParam(value = "The password for login in clear text", required = true) @Valid @RequestParam(value = "password", required = true) String password);
@@ -62,6 +65,7 @@ public interface UserApi
     @ApiOperation(value = "Logs out current logged in user session", nickname = "userLogoutGet", notes = "", tags={  })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "successful operation") })
+    @CrossOrigin(origins = "http://localhost:4200")
     @RequestMapping(value = "/user/logout",
         method = RequestMethod.GET)
     ResponseEntity<Void> userLogoutGet();
@@ -77,6 +81,7 @@ public interface UserApi
     @ApiOperation(value = "Create user", nickname = "userPost", notes = "This can only be done by the logged in user.", tags={  })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "successful operation") })
+    @CrossOrigin(origins = "http://localhost:4200")
     @RequestMapping(value = "/user",
         consumes = { "application/json" },
         method = RequestMethod.POST)

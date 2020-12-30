@@ -83,6 +83,23 @@ paths:
       responses:
         default:
           description: "successful operation"
+    get:
+      summary: "Get user"
+      description: Get user object based on username.
+      parameters:
+        - in: query
+          name: username
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
   /user/all:
     get:
       summary: "Gets all users"
@@ -98,17 +115,9 @@ paths:
 components:
   schemas:
       ChristmasList:
-        type: object
-        required:
-          - username
-          - list
-        properties:
-          username:
-            type: string
-          list:
-            type: array
-            items:
-              $ref: '#/components/schemas/Item'
+        type: array
+        items:
+            $ref: '#/components/schemas/Item'
       Item:
         type: object
         required:
@@ -133,6 +142,4 @@ components:
           password:
             type: string
           firstName:
-            type: string
-          lastName:
             type: string

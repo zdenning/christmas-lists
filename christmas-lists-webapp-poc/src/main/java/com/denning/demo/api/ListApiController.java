@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.denning.demo.mapper.ListMapper;
-import com.denning.demo.model.ChristmasList;
 import com.denning.demo.model.Item;
 import com.denning.demo.validator.Validator;
 
@@ -42,30 +41,26 @@ public class ListApiController implements ListApi
      */
 	@Transactional
     @Override
-    public ResponseEntity<ChristmasList> listGet(@ApiParam(value = "Username for the list being retrieved.") @Valid
+    public ResponseEntity<List<Item>> listGet(@ApiParam(value = "Username for the list being retrieved.") @Valid
         	@RequestParam(value = "username", required = true) String username, 
         	@ApiParam(value = "Username for the logged in user.") @Valid
         	@RequestParam(value = "currentUser", required = true) String currentUser)
     {
     	HttpStatus status = HttpStatus.PROCESSING;
-    	final ChristmasList christmasList = new ChristmasList();
     	
     	final List<Item> itemList = jdbcTemplate.query("select * from ITEMS where USERNAME = ?",
     			new Object[]{username}, new ListMapper());
     	
-    	christmasList.setList(itemList);
-    	christmasList.setUsername(username);
-    	
     	if (username.equals(currentUser))
     	{
-    		christmasList.getList().stream().forEach(item -> {
+    		itemList.stream().forEach(item -> {
     			item.setBought(null);
     		});
     	}
     	
     	status = HttpStatus.OK;
     	
-        return new ResponseEntity<ChristmasList>(christmasList, status);
+        return new ResponseEntity<List<Item>>(itemList, status);
     }
     
     /**
@@ -108,8 +103,8 @@ public class ListApiController implements ListApi
 		if (!validator.validateUser(username))
     		return ResponseEntity.badRequest().body("Not a valid user");
 		
-		final ResponseEntity<ChristmasList> list = this.listGet(username, currentUser);
-		for (final Item it : list.getBody().getList())
+		final ResponseEntity<List<Item>> list = this.listGet(username, currentUser);
+		for (final Item it : list.getBody())
 		{
 			if (item.getName().equals(it.getName()) && it.getBought())
 			{

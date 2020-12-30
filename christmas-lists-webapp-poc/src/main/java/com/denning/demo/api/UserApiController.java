@@ -60,8 +60,11 @@ public class UserApiController implements UserApi
 			@Valid @RequestParam(value = "password", required = true) String password)
 	{
 		
-		final List<User> users = jdbcTemplate.query("select * from USERS", new UserMapper());
+		final List<User> users = jdbcTemplate.query("select * from USERS", new UserMapper()); //Refactor to query based on 
+																							  //username and password. Return if successful.
 		
+		System.out.println("Input: " + username + "/" + password);
+		System.out.println("Output: " + users);
 		for (User user : users)
 			if (user.getUsername().equals(username) && user.getPassword().equals(password))
 				return ResponseEntity.ok().build();
@@ -90,11 +93,10 @@ public class UserApiController implements UserApi
 	{
     	try
     	{
-    		jdbcTemplate.update("insert into USERS(USERNAME, PASSWORD, FIRST_NAME, LAST_NAME) values (?,?,?,?)",
+    		jdbcTemplate.update("insert into USERS(USERNAME, PASSWORD, FIRST_NAME) values (?,?,?)",
     				user.getUsername(),
     				user.getPassword(),
-    				user.getFirstName(),
-    				user.getLastName());
+    				user.getFirstName());
     	}
     	catch (final Exception e)
     	{
