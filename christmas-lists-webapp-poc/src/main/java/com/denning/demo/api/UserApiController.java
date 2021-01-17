@@ -25,7 +25,9 @@ import javax.validation.constraints.NotNull;
 @RequestMapping("${openapi.christmasLists.base-path:/v1}")
 public class UserApiController implements UserApi
 {
+	/** The JDBC template */
 	private JdbcTemplate jdbcTemplate;
+	
 	
 	@Autowired
 	public UserApiController(final JdbcTemplate jdbcTemplate)
@@ -33,6 +35,7 @@ public class UserApiController implements UserApi
 		this.jdbcTemplate = jdbcTemplate;
 	}
 
+	
     /**
      * {@inheritDoc}
      */
@@ -49,6 +52,7 @@ public class UserApiController implements UserApi
         return new ResponseEntity<List<User>>(users, status);
     }
 
+	
     /**
      * {@inheritDoc}
      */
@@ -73,6 +77,7 @@ public class UserApiController implements UserApi
         return ResponseEntity.badRequest().body("Invalid username/password");
     }
 
+	
     /**
      * {@inheritDoc}
      */
@@ -84,6 +89,7 @@ public class UserApiController implements UserApi
 
     }
 
+	
     /**
      * {@inheritDoc}
      */
@@ -103,6 +109,27 @@ public class UserApiController implements UserApi
     		return ResponseEntity.badRequest().body("That user already exists!");
     	}
 		
+        return ResponseEntity.ok().build();
+    }
+	
+	
+    /**
+     * {@inheritDoc}
+     */
+	@Transactional
+	@Override
+	public ResponseEntity<String> userDelete(
+			@ApiParam(value = "") @Valid @RequestParam(value = "username", required = false) String username)
+	{
+        try
+        {
+        	jdbcTemplate.update("delete from USERS where USERNAME = '"+ username + "'");
+        }
+        catch (final Exception e)
+        {
+        	return ResponseEntity.badRequest().body("Failed to delete user " + username);
+        }
+
         return ResponseEntity.ok().build();
     }
 }

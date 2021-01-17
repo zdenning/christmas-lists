@@ -3,9 +3,9 @@
 Feature: Placeholder Feature
 	
 	Scenario: scenario 1
-		Given the username is zdenning
+		Given the username is emunndenn
 		And the password is pass123
-		And the firstName is Zac
+		And the firstName is Erin
 		When add user operation is run
 		Then user will be available through the get all users request
 		

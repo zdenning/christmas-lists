@@ -7,6 +7,8 @@ package com.denning.demo.api;
 
 import com.denning.demo.model.User;
 import io.swagger.annotations.*;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -86,5 +88,20 @@ public interface UserApi
         consumes = { "application/json" },
         method = RequestMethod.POST)
     ResponseEntity<String> userPost(@ApiParam(value = "" ,required=true )  @Valid @RequestBody User user);
+
+    
+    /**
+     * DELETE /user : Delete user
+     * This can only be done if the user being deleted is the current user. That will be handled by the application.
+     *
+     * @param username  (optional)
+     * @return Successful Operation (status code 200)
+     */
+    @ApiOperation(value = "Delete user", nickname = "userDelete", notes = "This can only be done if the user being deleted is the current user. That will be handled by the application.", tags={  })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "Successful Operation") })
+    @RequestMapping(value = "/user",
+        method = RequestMethod.DELETE)
+    ResponseEntity<String> userDelete(@ApiParam(value = "") @Valid @RequestParam(value = "username", required = false) String username);
 
 }
