@@ -5,16 +5,16 @@ import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
 
-import com.denning.demo.model.Item;
+import com.denning.demo.model.Gift;
 
-public class ListMapper implements RowMapper<Item>
+public class ListMapper implements RowMapper<Gift>
 {
 	
-	public Item mapRow(final ResultSet rs, int rowNum) throws SQLException
+	public Gift mapRow(final ResultSet rs, int rowNum) throws SQLException
 	{
-		final Item item = new Item();
+		final Gift item = new Gift();
 		item.setName(rs.getString("NAME"));
-		item.setLinkOrNotes(rs.getString("NOTES"));
+		item.setDescription(rs.getString("NOTES"));
 		item.setBought(rs.getBoolean("BOUGHT"));
 		
 		return item;

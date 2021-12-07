@@ -1,14 +1,15 @@
 package com.denning.demo.validator;
 
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.denning.demo.mapper.UserMapper;
+import com.denning.demo.dynamodb.DynamoDBClientV2;
 
 public class Validator
 {
 	private JdbcTemplate jdbcTemplate;
+	
+//	@Autowired
+	private DynamoDBClientV2 dynamoDBClientV2 = new DynamoDBClientV2();
+	
 	
 	/**
 	 * @param jdbcTemplate
@@ -18,15 +19,13 @@ public class Validator
 		this.jdbcTemplate = jdbcTemplate;
 	}
 	
-	@Transactional
 	public boolean validateUser(final String username)
 	{
 		try 
 		{
-			jdbcTemplate.queryForObject("select * from USERS where USERNAME = ?",
-					new Object[]{username}, new UserMapper());
+			dynamoDBClientV2.getUser(username);
 		}
-		catch (EmptyResultDataAccessException e)
+		catch (Exception e)
 		{
 			return false;
 		}

@@ -7,6 +7,8 @@ package com.denning.demo.api;
 
 import com.denning.demo.model.User;
 import io.swagger.annotations.*;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -32,12 +34,43 @@ public interface UserApi
     @ApiOperation(value = "Gets all users", nickname = "userAllGet", notes = "", response = User.class, responseContainer = "List", tags={  })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "Successful Operation", response = User.class, responseContainer = "List") })
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = "*")
     @RequestMapping(value = "/user/all",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
     ResponseEntity<List<User>> userAllGet();
+    
+    /**
+     * GET /user/friends : Gets all friends
+     *
+     * @return Successful Operation (status code 200)
+     */
+    @ApiOperation(value = "Gets all users", nickname = "userAllGet", notes = "", response = User.class, responseContainer = "List", tags={  })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "Successful Operation", response = User.class, responseContainer = "List") })
+    @CrossOrigin(origins = "*")
+    @RequestMapping(value = "/user/friends",
+        produces = { "application/json" }, 
+        method = RequestMethod.GET)
+    ResponseEntity<List<User>> userFriendsGet(@NotNull @ApiParam(value = "The current user", required = true) 
+    										@Valid @RequestParam(value = "username", required = true) String username);
 
+    /**
+     * POST /user/friends : Gets all friends
+     *
+     * @return Successful Operation (status code 200)
+     */
+    @ApiOperation(value = "Gets all users", nickname = "userAllGet", notes = "", response = User.class, responseContainer = "List", tags={  })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "Successful Operation", response = User.class, responseContainer = "List") })
+    @CrossOrigin(origins = "*")
+    @RequestMapping(value = "/user/friends",
+        produces = { "application/json" }, 
+        method = RequestMethod.POST)
+    ResponseEntity<String> userFriendsAdd(@NotNull @ApiParam(value = "The current user", required = true) 
+    										@Valid @RequestParam(value = "username", required = true) String username,
+    										@NotNull @ApiParam(value = "The friend to add", required = true) 
+											@Valid @RequestParam(value = "friend", required = true) String friendUsername);
 
     /**
      * GET /user/login : Logs user into the system
@@ -51,7 +84,7 @@ public interface UserApi
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "successful operation"),
         @ApiResponse(code = 400, message = "Invalid username/password supplied") })
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = "*")
     @RequestMapping(value = "/user/login",
         method = RequestMethod.GET)
     ResponseEntity<String> userLoginGet(@NotNull @ApiParam(value = "The user name for login", required = true) @Valid @RequestParam(value = "username", required = true) String username,@NotNull @ApiParam(value = "The password for login in clear text", required = true) @Valid @RequestParam(value = "password", required = true) String password);
@@ -65,7 +98,7 @@ public interface UserApi
     @ApiOperation(value = "Logs out current logged in user session", nickname = "userLogoutGet", notes = "", tags={  })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "successful operation") })
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = "*")
     @RequestMapping(value = "/user/logout",
         method = RequestMethod.GET)
     ResponseEntity<Void> userLogoutGet();
@@ -81,10 +114,25 @@ public interface UserApi
     @ApiOperation(value = "Create user", nickname = "userPost", notes = "This can only be done by the logged in user.", tags={  })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "successful operation") })
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = "*")
     @RequestMapping(value = "/user",
         consumes = { "application/json" },
         method = RequestMethod.POST)
     ResponseEntity<String> userPost(@ApiParam(value = "" ,required=true )  @Valid @RequestBody User user);
+
+    
+    /**
+     * DELETE /user : Delete user
+     * This can only be done if the user being deleted is the current user. That will be handled by the application.
+     *
+     * @param username  (optional)
+     * @return Successful Operation (status code 200)
+     */
+    @ApiOperation(value = "Delete user", nickname = "userDelete", notes = "This can only be done if the user being deleted is the current user. That will be handled by the application.", tags={  })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "Successful Operation") })
+    @RequestMapping(value = "/user",
+        method = RequestMethod.DELETE)
+    ResponseEntity<String> userDelete(@ApiParam(value = "") @Valid @RequestParam(value = "username", required = false) String username);
 
 }
